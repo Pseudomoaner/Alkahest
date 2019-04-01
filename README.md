@@ -112,3 +112,8 @@ Each image is also saved as a .tif in a newly created folder called 'MeltingTime
 - By EU2017EE Estonian Presidency - Tallinn Digital Summit. Welcome dinner hosted by HE Donald Tusk. Tour de table, CC BY 2.0, https://commons.wikimedia.org/w/index.php?curid=62856180
 - By Pretzelpaws at the English language Wikipedia, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=7103158
 - Public Domain, https://commons.wikimedia.org/w/index.php?curid=2106343
+
+## Contributors
+
+- Oliver J. Meacock
+- William P. J. Smith
