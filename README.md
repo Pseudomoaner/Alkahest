@@ -2,7 +2,7 @@
 
 Alkahest is effective against stubborn rock formations:
 
-![Bridge](https://raw.githubusercontent.com/Pseudomoaner/Alkahest/master/Graphics/Bridge.gif)
+<img src="https://raw.githubusercontent.com/Pseudomoaner/Alkahest/master/Graphics/Bridge.gif" alt="Bridge" width="200"/>
 
 Tough to remove Prime Ministers:
 
