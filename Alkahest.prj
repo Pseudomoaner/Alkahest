@@ -1,0 +1,79 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="2878321045" file="C:\Users\olijm\Dropbox\Twork\Code\Modelling\Alkahest\Alkahest.prj" location="C:\Users\olijm\Dropbox\Twork\Code\Modelling\Alkahest" name="Alkahest" target="target.mlapps" target-name="Package App">
+    <param.appname>Alkahest</param.appname>
+    <param.authnamewatermark>Oliver J. Meacock</param.authnamewatermark>
+    <param.email>O.J.Meacock@Sheffield.ac.uk</param.email>
+    <param.company>University of Sheffield</param.company>
+    <param.icon>${PROJECT_ROOT}\Alkahest_resources\icon_24.png</param.icon>
+    <param.icons>
+      <file>${PROJECT_ROOT}\Alkahest_resources\icon_48.png</file>
+      <file>${PROJECT_ROOT}\Alkahest_resources\icon_24.png</file>
+      <file>${PROJECT_ROOT}\Alkahest_resources\icon_16.png</file>
+    </param.icons>
+    <param.summary>Alkahest image degredation platform</param.summary>
+    <param.description />
+    <param.screenshot>C:\Users\olijm\AppData\Local\Temp\tp85c3b812_501b_42ac_a57b_8501cd9fdca2.png</param.screenshot>
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>C:\Users\olijm\Dropbox\Twork\Code\Modelling\Alkahest</param.output>
+    <param.guid>c1331c33-b7d7-491c-a571-4b504448c7f9</param.guid>
+    <unset>
+      <param.description />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\Alkahest.mlapp</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\calcEnergyGradientsPeriodic.m</file>
+      <file>${PROJECT_ROOT}\calcFrictionTensors.m</file>
+      <file>${PROJECT_ROOT}\calcGeomFactors.m</file>
+      <file>${PROJECT_ROOT}\calculateSegmentNumberLength.m</file>
+      <file>${PROJECT_ROOT}\findImageOrients.m</file>
+      <file>${PROJECT_ROOT}\Gridding\calcGriddedDistMat.m</file>
+      <file>${PROJECT_ROOT}\Gridding\Get2DGridSqNeighbourhoods.m</file>
+      <file>${PROJECT_ROOT}\Gridding\GetGridSquareContents.m</file>
+      <file>${PROJECT_ROOT}\Gridding\GridAndBinPoints2D.m</file>
+      <file>${PROJECT_ROOT}\lineSegmentIntersect\lineSegmentIntersectPeriodic.m</file>
+      <file>${PROJECT_ROOT}\mexCalcEnergyGradientsPeriodic.mexw64</file>
+      <file>${PROJECT_ROOT}\paintEllipse.m</file>
+      <file>${PROJECT_ROOT}\Progress Bar\progressbar.m</file>
+      <file>${PROJECT_ROOT}\simulateWensinkField.m</file>
+      <file>${PROJECT_ROOT}\simulateWensinkFieldBurnIn.m</file>
+      <file>${PROJECT_ROOT}\WensinkField.m</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Users\olijm\Dropbox\Twork\Code\Modelling" name="Alkahest" optional="false">C:\Users\olijm\Dropbox\Twork\Code\Modelling\Alkahest</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2018b</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
