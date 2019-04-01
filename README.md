@@ -1,2 +1,5 @@
 # Alkahest
-Alkahest image degredation platform
+
+Alkahest is effective against stubborn rock formations:
+
+![Bridge](https://raw.githubusercontent.com/Pseudomoaner/Alkahest/master/Graphics/bridge.gif)
