@@ -76,11 +76,15 @@ You next need to select the input image. To do this, simply click 'Choose file'.
 
 ### Parameter selection
 
-The Alkahest GUI limits users to three variable parameters:
+The Alkahest GUI limits users to three variable parameters, selectable by the sliders within the 'Settings' panel:
 
 1. Number of rod-pixels, or 'rixels'. These are the elongated image elements that will actually move during the simulation steps. Much like in normal images, increasing the number of rixels will increase the resolution and clarity of the output images. However, processing times increase substantially at high rixel numbers. Choose wisely.
-2. Simulation time. This controls the total extent of movement possible between the start and end of the simulation. Unsurprisingly, simulation times scale linearly with this parameter.
-3. 
+2. Simulation time. This controls the total extent of movement possible between the start and end of the simulation.
+3. Rixel length. This controls the aspect ratio (length to width ratio) of each rixel. Higher values produce more elongated image elements, and also tend to produce larger-scale motions in the system dynamics.
+
+Once you are happy with your parameter choices, press 'Set 'er going!' to begin simulating the system dynamics.
+
+Depending on the settings chosen, now is probably a good time to go to sleep (irresponsibly leaving your computer running overnight).
 
 ### Outputs
 
