@@ -1,5 +1,9 @@
 # Alkahest
 
+
+
+With new Alkahest-brand solvent, worry no more! Simply apply to the problem at hand, and watch it melt away.
+ 
 Alkahest is effective against stubborn rock formations:
 
 <table width="600" border="0" cellpadding="0" cellspacing="0">
@@ -18,7 +22,7 @@ Alkahest is effective against stubborn rock formations:
 
 </table>
 
-Tough to remove Prime Ministers:
+Hard-to-remove Prime Ministers:
 
 <table width="400" border="0" cellpadding="0" cellspacing="0">
 
@@ -72,7 +76,11 @@ Finding the target of your ire is dissolving more slowly than you'd like? Alkahe
 
 To begin Alkahest, click on the Alkahest logo in the 'APPS' tab in your main Matlab window. This will bring up the Alkahest GUI:
 
+![Empty GUI](https://raw.githubusercontent.com/Pseudomoaner/Alkahest/master/Graphics/EmptyGUI.PNG)
+
 You next need to select the input image. To do this, simply click 'Choose file'. This will bring up a folder selection dialogue. Navigate to the folder containing your image, click 'Select folder', then in the next dialog select your target image. Alkahest will then show the image in the top left axes, and its estimation of the local orientation for each pixel in the image in the botton left axes:
+
+![Initialised GUI](https://raw.githubusercontent.com/Pseudomoaner/Alkahest/master/Graphics/HalfDoneGUI.PNG)
 
 ### Parameter selection
 
@@ -89,6 +97,8 @@ Depending on the settings chosen, now is probably a good time to go to sleep (ir
 ### Outputs
 
 As Alkahest runs, the latest output image will be shown in the large axes on the right of the figure:
+
+![Running GUI](https://raw.githubusercontent.com/Pseudomoaner/Alkahest/master/Graphics/RunningGUI.PNG)
 
 Each image is also saved as a .tif in a newly created folder called 'MeltingTimelapse' in the directory your image is saved in. To watch your target melt in real time, you can load these images as a movie using File -> Import -> Image Sequence in [Fiji](https://fiji.sc/).
 
