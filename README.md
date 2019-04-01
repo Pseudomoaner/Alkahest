@@ -1,8 +1,12 @@
 # Alkahest
 
+Are you beset by insoluble difficulties?
 
+Do you suffer from a stained conscience, or reputation?
 
-With new Alkahest-brand solvent, worry no more! Simply apply to the problem at hand, and watch it melt away.
+Have immovable objects nullified the unstoppable force that is you?
+
+With new Alkahest-brand solvent, worry no more! Simply apply to the problem at hand, and watch it melt away before your eyes.
  
 Alkahest is effective against stubborn rock formations:
 
@@ -68,7 +72,7 @@ Alkahest has been tested on Matlab 2018a and 2018b. If you test it on a another 
 
 ### Advanced installation
 
-Finding the target of your ire is dissolving more slowly than you'd like? Alkahest includes a .c file for computing the potential gradients acting on rods (the most time-consuming stage of the simulation process). To use this, simply follow this guid to [compiling .mex files](http://cs.smith.edu/~nhowe/370/Assign/mexfiles.html), applying it to mexCalcEnergyGradientsPeriodic.c.
+Finding the target of your ire is dissolving more slowly than you'd like? Alkahest includes a .c file for computing the potential gradients acting on rods (the most time-consuming stage of the simulation process). To use this, simply follow this guid to [compiling .mex files](http://cs.smith.edu/~nhowe/370/Assign/mexfiles.html), applying it to mexCalcEnergyGradientsPeriodic.c. Alkahest will then automatically detect the compiled version and use it in place of the native .m function.
 
 ## Usage
 
