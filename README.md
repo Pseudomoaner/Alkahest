@@ -2,4 +2,4 @@
 
 Alkahest is effective against stubborn rock formations:
 
-![Bridge](https://raw.githubusercontent.com/Pseudomoaner/Alkahest/master/Graphics/bridge.gif)
+![Bridge](https://raw.githubusercontent.com/Pseudomoaner/Alkahest/master/Graphics/Bridge.gif)
