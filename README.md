@@ -82,11 +82,15 @@ The Alkahest GUI limits users to three variable parameters, selectable by the sl
 2. Simulation time. This controls the total extent of movement possible between the start and end of the simulation.
 3. Rixel length. This controls the aspect ratio (length to width ratio) of each rixel. Higher values produce more elongated image elements, and also tend to produce larger-scale motions in the system dynamics.
 
-Once you are happy with your parameter choices, press 'Set 'er going!' to begin simulating the system dynamics.
+Once you are happy with your parameter choices, press 'Set 'er going!' to begin simulating the system dynamics. You will see a series of five loading bars appear, with the first four corresponding to the simulation initialisation stages, and the last corresponding to the main simulation.
 
 Depending on the settings chosen, now is probably a good time to go to sleep (irresponsibly leaving your computer running overnight).
 
 ### Outputs
+
+As Alkahest runs, the latest output image will be shown in the large axes on the right of the figure:
+
+Each image is also saved as a .tif in a newly created folder called 'MeltingTimelapse' in the directory your image is saved in. To watch your target melt in real time, you can load these images as a movie using File -> Import -> Image Sequence in [Fiji](https://fiji.sc/).
 
 ## References
 
