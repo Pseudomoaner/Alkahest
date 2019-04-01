@@ -1,4 +1,4 @@
-Copyright (c) 2010, U. Murat Erdem
+Copyright (c) 2019, William P. J. Smith, Oliver J. Meacock
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
