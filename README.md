@@ -86,7 +86,7 @@ You next need to select the input image. To do this, simply click 'Choose file'.
 
 ![Initialised GUI](https://raw.githubusercontent.com/Pseudomoaner/Alkahest/master/Graphics/HalfDoneGUI.PNG)
 
-Alkahest uses the tensor method to estimate the local orientation of the image at each location. For more details, see [here](https://doi.org/10.1007/978-3-319-28549-8_3).
+Alkahest uses the tensor method to estimate the local orientation of the image at each location. For more details, see [this book](https://doi.org/10.1007/978-3-319-28549-8_3).
 
 ### Parameter selection
 
