@@ -6,7 +6,7 @@ Do you suffer from a stained conscience, or reputation?
 
 Have immovable objects nullified the unstoppable force that is you?
 
-With new Alkahest-brand solvent, worry no more! Simply apply to the problem at hand, and watch it melt away before your eyes.
+With new Alkahest-brand image solvent, worry no more! Simply apply to the problem at hand, and watch it melt away before your eyes.
  
 Alkahest is effective against stubborn rock formations:
 
@@ -62,7 +62,7 @@ The abstract concept of love:
 
 </table>
 
-And much else. So try it today!
+And much more. So try it today!
 
 ## Installation
 
@@ -96,7 +96,7 @@ The Alkahest GUI limits users to three variable parameters, selectable by the sl
 
 Once you are happy with your parameter choices, press 'Set 'er going!' to begin simulating the system dynamics. You will see a series of five loading bars appear, with the first four corresponding to the simulation initialisation stages, and the last corresponding to the main simulation.
 
-Depending on the settings chosen, now is probably a good time to go to sleep (irresponsibly leaving your computer running overnight).
+Depending on the settings chosen, now is probably a good time to go to sleep (while irresponsibly leaving your computer running overnight).
 
 ### Outputs
 
