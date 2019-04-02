@@ -6,7 +6,7 @@ Do you suffer from a stained conscience, or reputation?
 
 Have immovable objects nullified the unstoppable force that is you?
 
-With new Alkahest-brand image solvent, worry no more! Simply apply to the problem at hand, and watch it melt away before your eyes.
+With new Alkahest-brand solvent, worry no more! Simply apply to the problem at hand, and watch it melt away before your eyes.
  
 Alkahest is effective against stubborn rock formations:
 
@@ -72,7 +72,7 @@ Alkahest has been tested on Matlab 2018a and 2018b. If you test it on a another 
 
 ### Advanced installation
 
-Finding the target of your ire is dissolving more slowly than you'd like? Alkahest includes a .c file for computing the potential gradients acting on rods (the most time-consuming stage of the simulation process). To use this, simply follow [this guide](http://cs.smith.edu/~nhowe/370/Assign/mexfiles.html) to compiling .mex files, applying it to mexCalcEnergyGradientsPeriodic.c. Alkahest will then automatically detect the compiled version and use it in place of the native .m function.
+Finding the target of your ire is dissolving more slowly than you'd like? Alkahest includes a .c file for computing the potential gradients acting on rods (the most time-consuming stage of calculating the dynamics of the system). To use this, simply follow [this guide](http://cs.smith.edu/~nhowe/370/Assign/mexfiles.html) to compiling .mex files, applying it to mexCalcEnergyGradientsPeriodic.c. Alkahest will then automatically detect the compiled version and use it in place of the native .m function.
 
 ## Usage
 
@@ -85,6 +85,8 @@ To begin Alkahest, click on the Alkahest logo in the 'APPS' tab in your main Mat
 You next need to select the input image. To do this, simply click 'Choose file'. This will bring up a folder selection dialogue. Navigate to the folder containing your image, click 'Select folder', then in the next dialog select your target image. Alkahest will then show the image in the top left axes, and its estimation of the local orientation for each pixel in the image in the botton left axes:
 
 ![Initialised GUI](https://raw.githubusercontent.com/Pseudomoaner/Alkahest/master/Graphics/HalfDoneGUI.PNG)
+
+Alkahest uses the tensor method to estimate the local orientation of the image at each location. For more details, see [here](https://doi.org/10.1007/978-3-319-28549-8_3).
 
 ### Parameter selection
 
@@ -110,6 +112,7 @@ Each image is also saved as a .tif in a newly created folder called 'MeltingTime
 
 - Wensink, H. H., & Löwen, H. (2012). Emergent states in dense systems of active rods: From swarming to turbulence. Journal of Physics Condensed Matter, 24(46). https://doi.org/10.1088/0953-8984/24/46/464130
 - Lowen, H., Dunkel, J., Heidenreich, S., Goldstein, R. E., Yeomans, J. M., Wensink, H. H., & Drescher, K. (2012). Meso-scale turbulence in living fluids. Proceedings of the National Academy of Sciences, 109(36), 14308–14313. https://doi.org/10.1073/pnas.1202032109
+- Püspöki, Z., Storath, M., Sage, D., & Unser, M. (2016). Transforms and operators for directional bioimage analysis: A survey. Advances in Anatomy Embryology and Cell Biology, 219, 69–93. https://doi.org/10.1007/978-3-319-28549-8_3
 
 ## Image attributions
 
