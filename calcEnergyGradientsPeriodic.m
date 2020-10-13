@@ -6,7 +6,7 @@ function [dUdx,dUdy,dUdthet] = calcEnergyGradientsPeriodic(xBets,yBets,lBets,nBe
 %  
 %  For full details, see:
 % 
-%  Wensink, H. H., & Löwen, H. (2012). Emergent states in dense systems of 
+%  Wensink, H. H., & LÃ¶wen, H. (2012). Emergent states in dense systems of 
 %  active rods: From swarming to turbulence. Journal of Physics Condensed 
 %  Matter, 24(46). https://doi.org/10.1088/0953-8984/24/46/464130
 % 
@@ -26,8 +26,8 @@ for bet = 1:size(xBets,1)
     preFac = U0/(nAlph*nBet);
     
     %Pairwise comparison of segments
-    alphPos = repmat((1:nAlph) - (nAlph/2),[nBet,1]); %Rows are the alpha index, columns the beta index.
-    betPos = repmat((1:nBet)' - (nBet/2),[1,nAlph]);
+    alphPos = repmat((1:nAlph) - ((nAlph+1)/2),[nBet,1]); %Rows are the alpha index, columns the beta index.
+    betPos = repmat((1:nBet)' - ((nBet+1)/2),[1,nAlph]);
     
     xiAlph = xAlph + lAlph*alphPos*cos(thetAlph);
     xjBet = xBet + lBet*betPos*cos(thetBet);
