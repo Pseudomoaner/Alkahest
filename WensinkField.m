@@ -317,6 +317,49 @@ classdef WensinkField
             
             outImg = cat(3,imgr,imgg,imgb);            
             outImg = imresize(outImg,1/Downsample);
-        end        
+        end
+
+        function [] = plotField(obj,ax)
+            %Plots the current state of the model, using Voronoi patches to
+            %denote each cell's domain and colour.
+            
+            cla(ax)
+            hold(ax,'on')
+
+            %Do periodic padding of current cell locations
+            xPad = [obj.xCells - obj.xWidth; obj.xCells; obj.xCells + obj.xWidth; obj.xCells - obj.xWidth; obj.xCells; obj.xCells + obj.xWidth; obj.xCells - obj.xWidth; obj.xCells; obj.xCells + obj.xWidth];
+            yPad = [obj.yCells - obj.yHeight; obj.yCells - obj.yHeight; obj.yCells - obj.yHeight; obj.yCells; obj.yCells; obj.yCells; obj.yCells + obj.yHeight; obj.yCells + obj.yHeight; obj.yCells + obj.yHeight];
+            thetPad = repmat(obj.thetCells,9,1);
+            colPad = repmat(obj.cCells,9,1);
+            [v,c] = voronoin([xPad,yPad]);
+            
+            %Create voronoi patches
+            fudgeFac = 10;
+            include = false(size(xPad));
+            for i = 1:size(xPad,1)
+                pointList = v(c{i},:);
+                ptsGdX = and(pointList(:,1) < obj.xWidth + fudgeFac,pointList(:,1) > - fudgeFac);
+                ptsGdY = and(pointList(:,2) < obj.yHeight + fudgeFac,pointList(:,2) > - fudgeFac);
+                if sum([ptsGdX;ptsGdY]) == numel(pointList) %If all points in this voronoi patch are within an acceptable area
+                    patch(ax,pointList(:,1),pointList(:,2),1-colPad(i,:)*0.8,'EdgeColor','none');
+                    include(i) = true;
+                end
+            end
+            
+            %Create cell representations
+            for i = 1:size(xPad,1)
+                if include(i)
+                    lnXs = [xPad(i) - cos(thetPad(i))*1.5,xPad(i) + cos(thetPad(i))*1.5];
+                    lnYs = [yPad(i) - sin(thetPad(i))*1.5,yPad(i) + sin(thetPad(i))*1.5];
+
+                    plot(ax,lnXs,lnYs,'Color',0.7-colPad(i,:)*0.7,'LineWidth',1.5)
+                    plot(ax,lnXs(2),lnYs(2),'.','Color',0.7-colPad(i,:)*0.7,'MarkerSize',13)
+                end
+            end
+            
+            axis(ax,'equal')
+            axis(ax,[0,obj.xWidth,0,obj.yHeight])
+            ax.YDir = 'reverse';
+        end
     end
 end

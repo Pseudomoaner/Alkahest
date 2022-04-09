@@ -23,14 +23,17 @@ for i = 1:fS.motileSteps
     field = field.stepModel(fS.motiledt);
 
     if rem(i,fS.FrameSkip) == 0
-        outImg = field.drawField();
-        pause(0.01)
+%         outImg = field.drawField();
+        field.plotField(ax);
+        pause(0.1)
         
         imPath1 = sprintf(dS.ImgPath,fC);
         fullImPath = [dS.imagedirectory, filesep, imPath1];
         
-        imwrite(outImg,fullImPath)
-        imshow(outImg,'Parent',ax)
+        currImg = getframe(ax);
+        imwrite(currImg.cdata,fullImPath)
+%         imwrite(outImg,fullImPath)
+%         imshow(outImg,'Parent',ax)
         
         fC = fC + 1;
     end
