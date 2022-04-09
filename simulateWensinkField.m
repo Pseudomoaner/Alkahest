@@ -1,4 +1,4 @@
-function [] = simulateWensinkField(startField,fS,dS,ax,compiled)
+function [] = simulateWensinkField(startField,fS,dS,ax)
 %SIMULATEWENSINKFIELD performs the main simulation of Alakhest. The system
 %is visualised and saved at each sampling timepoint.
 %
@@ -20,7 +20,7 @@ fC = 0;
 %Actual simulation
 for i = 1:fS.motileSteps
     progressbar(i/fS.motileSteps)
-    field = field.stepModel(fS.motiledt,fS.f0,compiled);
+    field = field.stepModel(fS.motiledt);
 
     if rem(i,fS.FrameSkip) == 0
         outImg = field.drawField();

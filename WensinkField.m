@@ -1,15 +1,3 @@
-% Objects and methods for simulating and visualising a Self-Propelled Rod
-% (SPR) model based on electrostatic-like interactions between rods
-% composed of point-like segments.
-% 
-% For full details, see:
-%
-% Wensink, H. H., & Löwen, H. (2012). Emergent states in dense systems of 
-% active rods: From swarming to turbulence. Journal of Physics Condensed 
-% Matter, 24(46). https://doi.org/10.1088/0953-8984/24/46/464130
-%
-% Author: Oliver J. Meacock
-
 classdef WensinkField
     properties
         xWidth %Width of field
@@ -28,19 +16,91 @@ classdef WensinkField
         cellDists %Distance between all cells. Indexed in same way as obj.cells.
         distThresh %Distance between cells, beyond which interactions are too weak to be relevant. 
         U0 %Potential Amplitude
+        f0 %Stoksian friction coefficient
         lam %Screening length of Yukawa segements
+        resUp
+
+        boundConds %Boundary conditions (periodic or none)
+        
+        gpuAvailable %Whether there is a GPU available in the current system
+        compiled %Whether there is a compiled .mex version of the potential gradient functions available
     end
     methods
-        function obj = WensinkField(xWidth,yHeight,U0,lam)
-            if isnumeric(xWidth) && xWidth > 0 && isnumeric(yHeight) && yHeight > 0
-                obj.xWidth = xWidth;
-                obj.yHeight= yHeight;
+        function obj = WensinkField(fS)
+            inputCheck = isfield(fS,{'xWidth','yHeight','U0','lam','boundaryConditions','f0','resUp'});
+
+            %Check and store domain size settings
+            if ~inputCheck(1) || ~inputCheck(2) %Must have the domain size
+                error('fieldSettings must include xWidth and yHeight as fields')
             else
-                error('Input arguments to WensinkField are not valid');
+                validateattributes(fS.xWidth,{'numeric'},{'scalar','positive'})
+                validateattributes(fS.yHeight,{'numeric'},{'scalar','positive'})
+                obj.xWidth = fS.xWidth;
+                obj.yHeight = fS.yHeight;
+            end            
+            
+            %Check U0
+            if inputCheck(3)
+                validateattributes(fS.U0,{'numeric'},{'scalar','positive'})
+                obj.U0 = fS.U0;
+            else
+                obj.U0 = 250;
             end
             
-            obj.U0 = U0;
-            obj.lam = lam;
+            %Check lambda
+            if inputCheck(4)
+                validateattributes(fS.lam,{'numeric'},{'scalar','positive'})
+                obj.lam = fS.lam;
+            else
+                obj.lam = 1;
+            end
+
+            %Check boundary conditions
+            if inputCheck(5)
+                validateattributes(fS.boundaryConditions,{'char'},{'scalartext'})
+                if ~any(strcmp({'none','periodic'},fS.boundaryConditions))
+                    error('Expected boundary conditions to be specified as either "none" or "periodic".')
+                else
+                    obj.boundConds = fS.boundaryConditions;
+                end
+            else
+                obj.boundConds = 'periodic';
+            end
+
+            %Check friction coefficient
+            if inputCheck(6)
+                validateattributes(fS.f0,{'numeric'},{'scalar','positive'})
+                obj.f0 = fS.f0;
+            else
+                obj.f0 = 1;
+            end
+
+            if inputCheck(7)
+                validateattributes(fS.resUp,{'numeric'},{'scalear','positive'})
+                obj.resUp = fS.resUp;
+            else
+                obj.resUp = 5;
+            end
+
+            %Check to see if GPU and/or .mex files are available for
+            %calculating the potential between rods
+            try
+                gpuArray(1);
+                obj.gpuAvailable = true;
+            catch
+                obj.gpuAvailable = false;
+            end
+            
+            locPath = mfilename('fullpath');
+            locPath = locPath(1:end-13); %Path without the uneccessary '\WensinkField' on the end
+            
+            if exist(fullfile(locPath,'PotentialCalculations',['mexCalcEnergyGradientsPeriodic.',mexext]),'file') && strcmp(obj.boundConds,'periodic')
+                obj.compiled = true;
+            elseif exist(fullfile(locPath,'PotentialCalculations',['mexCalcEnergyGradients.',mexext]),'file') && strcmp(obj.boundConds,'none')
+                obj.compiled = true;
+            else
+                obj.compiled = false;
+            end
         end
         
         function obj = populateField(obj,cellSettingsType,cellSettings,areaFrac)
@@ -62,7 +122,7 @@ classdef WensinkField
             [obj.nCells,obj.lCells] = calculateSegmentNumberLength(obj.aCells,obj.lam);
             obj.uCells = [cos(obj.thetCells),sin(obj.thetCells)];
         end
-        
+
         function obj = mapOrientations(obj,cS)
             for i = 1:cS.noCells
                 obj.xCells(i,1) = (rand(1) * (obj.xWidth - (2*ceil(cS.fieldScaling)+1))) + 1 + ceil(cS.fieldScaling);
@@ -99,7 +159,7 @@ classdef WensinkField
             end
             progressbar(1);
         end
-        
+
         function [crossCell1,crossCell2] = findCrossingCells(obj,candList1,candList2)
             
             closeMat = obj.cellDists < max(obj.lCells.*(obj.nCells+1)); %All cells whose centroids are close enough that they could be crossing
@@ -129,7 +189,7 @@ classdef WensinkField
             [crossCell1,crossCell2] = ind2sub(size(crossMat),find(crossMat));
         end
         
-        function areaFrac = getAreaFraction(obj) %Calculates the area fraction occupied by rods.            
+        function areaFrac = getAreaFraction(obj) %Calculates the area fraction occupied by rods.
             %Calculate rods as sperocylinders
             arRods = (obj.lam^2 * (obj.aCells - 1)) + (pi * (obj.lam/2)^2);
             totArea = obj.xWidth*obj.yHeight;
@@ -137,7 +197,11 @@ classdef WensinkField
         end
         
         function obj = calcDistMat(obj)
-            obj.cellDists = calcGriddedDistMat(obj);
+            if strcmp(obj.boundConds,'periodic')
+                obj.cellDists = calcGriddedDistMat(obj,true);
+            else
+                obj.cellDists = calcGriddedDistMat(obj,false);
+            end
         end
         
         function obj = calcDistThresh(obj)
@@ -147,62 +211,41 @@ classdef WensinkField
             
             obj.distThresh = maxLen + obj.lam + log(obj.U0); %Use of log(U0) here is somewhat justified by the exponential drop off in repelling strength. But not terribly. Use cautiously.
         end
-        
-        function [drdt,dthetadt] = calcVelocities(obj,f0,compiled)
-            %Calculates the rate of translation and rotation for all cells
-            includeMat = obj.cellDists < obj.distThresh;
-            includeMat(logical(diag(ones(length(includeMat),1)))) = 0;
-            includeMat = includeMat(1:length(obj.nCells),:); %Alpha rods should include all cells, beta rods all cells and all barrier rods
-             
-            [fT,fR] = calcFrictionTensors(obj.aCells,obj.uCells,f0);
+       
+        function [drdt,dthetadt] = calcVelocities(obj)
+            %Calculates the rate of translation and rotation for all cells             
+            [fT,fR] = calcFrictionTensors(obj.aCells,obj.uCells,obj.f0);
             [fPar,~,~] = calcGeomFactors(obj.aCells);
+            
+            %I will provide three methods for calculating the potential
+            %between rods (the slowest part of the model). Option 1, the
+            %most speedy, is to use the graphics card to split the
+            %calculation between many workers. Option 2, less speedy, is
+            %to use a pre-compiled .mex file. Option 3, less speedy still,
+            %is to use Matlab's inbuilt functions. Try each option in turn,
+            %opting for the next if the necessary hardware/code is not
+            %available.
+            if obj.gpuAvailable
+                [gradXY,gradTheta] = calcPotentialGradsGPU(obj);
+            elseif obj.compiled
+                [gradXY,gradTheta] = calcPotentialGradsCompiled(obj);
+            else
+                [gradXY,gradTheta] = calcPotentialGradsBase(obj);
+            end
             
             drdt = zeros(size(obj.xCells,1),2);
             dthetadt = zeros(size(obj.xCells));
-            
-            boundX = obj.xWidth/2;
-            boundY = obj.yHeight/2;
-            Height = obj.yHeight;
-            Width = obj.xWidth;
-            lam = obj.lam;
-            U0 = obj.U0;
-            
-            for i = 1:length(obj.nCells) %The index of the cell alpha.
-                %Get indices of cells that this cell (alpha) interacts with
-                betInds = find(includeMat(i,:));
-                xs = obj.xCells; xBets = xs(betInds);
-                ys = obj.yCells; yBets = ys(betInds);
-                ns = obj.nCells; nBets = ns(betInds);
-                ls = obj.lCells; lBets = ls(betInds);
-                thets = obj.thetCells; thetBets = thets(betInds);
                 
-                %Get dynamics
-                if length(obj.aCells) >= 1
-                    xAlph = obj.xCells(i);
-                    yAlph = obj.yCells(i);
-                    lAlph = obj.lCells(i);
-                    nAlph = obj.nCells(i);
-                    thetAlph = obj.thetCells(i);
-                    uAlph = obj.uCells(i,:)';
-                end
+            for i = 1:size(obj.xCells,1)
+                v0 = obj.fCells(i)/(obj.f0*fPar(i)); %The self-propulsion velocity of a non-interacting SPR
+                uAlph = obj.uCells(i,:)'; %The unit vector representing the current orientation of the rod
                 
-                if compiled
-                    [dUdx,dUdy,dUdthet] = mexCalcEnergyGradientsPeriodic(xBets,yBets,lBets,nBets,thetBets,xAlph,yAlph,lAlph,nAlph,thetAlph,U0,lam,boundX,boundY,Width,Height);
-                else
-                    [dUdx,dUdy,dUdthet] = calcEnergyGradientsPeriodic(xBets,yBets,lBets,nBets,thetBets,xAlph,yAlph,lAlph,nAlph,thetAlph,U0,lam,boundX,boundY,Width,Height);
-                end
-                
-                gradXY = -[sum(dUdx)/2,sum(dUdy)/2];
-                gradTheta = -sum(dUdthet)/2;
-                
-                v0 = obj.fCells(i)/(f0*fPar(i)); %The self-propulsion velocity of a non-interacting SPR
-                
-                drdt(i,:) = (v0*uAlph - (fT(:,:,i)\gradXY'))';
-                dthetadt(i) = -gradTheta/fR(i);
+                drdt(i,:) = (v0*uAlph - (fT(:,:,i)\gradXY(i,:)'))';
+                dthetadt(i) = -gradTheta(i)/fR(i);
             end
         end
         
-        function obj = stepModel(obj,timeStep,f0,compiled)
+        function obj = stepModel(obj,timeStep)
             %Increases the time by one step, updating cell positions based on their current velocities.
             
             %Calculate distance matrix and threshold if needed (e.g. for first time point)
@@ -212,14 +255,16 @@ classdef WensinkField
             if isempty(obj.cellDists)
                 obj = obj.calcDistMat();
             end
-                         
+               
+            %Need to re-calculate distance threshold at each step. May change as cells grow.
+                        
             %Apply midpoint method to simulate movement dynamics
-            [drdtk1,dthetadtk1] = obj.calcVelocities(f0,compiled);
+            [drdtk1,dthetadtk1] = obj.calcVelocities();
             k1 = obj.moveCells(drdtk1,dthetadtk1,timeStep/2);
-            [drdt,dthetadt] = k1.calcVelocities(f0,compiled);
-
+            [drdt,dthetadt] = k1.calcVelocities();
+            
             %Update position and angle of cells based on dynamic parameters and timestep size
-            obj = obj.moveCells(drdt,dthetadt,timeStep);
+            obj = obj.moveCells(drdt,dthetadt,timeStep);         
             
             %Calculate distance matrix. Allows elimination of small-intensity interactions at later time points.
             obj = obj.calcDistThresh();
@@ -231,10 +276,12 @@ classdef WensinkField
             obj.xCells = obj.xCells + timeStep*drdt(:,1);
             obj.yCells = obj.yCells + timeStep*drdt(:,2);
             
-            %Apply periodic boundary conditions
-            obj.xCells = mod(obj.xCells,obj.xWidth);
-            obj.yCells = mod(obj.yCells,obj.yHeight);
-                        
+            if strcmp(obj.boundConds,'periodic')
+                %Apply periodic boundary conditions
+                obj.xCells = mod(obj.xCells,obj.xWidth);
+                obj.yCells = mod(obj.yCells,obj.yHeight);
+            end
+            
             %Updates the angles of the cell
             obj.thetCells = obj.thetCells + dthetadt*timeStep;
             obj.thetCells = mod(obj.thetCells + pi,2*pi) - pi;
@@ -270,6 +317,6 @@ classdef WensinkField
             
             outImg = cat(3,imgr,imgg,imgb);            
             outImg = imresize(outImg,1/Downsample);
-        end
+        end        
     end
 end

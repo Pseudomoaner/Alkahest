@@ -1,4 +1,4 @@
-function field = simulateWensinkFieldBurnIn(startField,fS,compiled)
+function field = simulateWensinkFieldBurnIn(startField,fS)
 %SIMULATEWENSINKFIELDBURNIN performs initial, short timestep simulations of
 %the given input field to allow the elastic strain introduced by the
 %initialisation steps to be released without causing the simulation to
@@ -20,6 +20,6 @@ field = startField;
 for i = 1:fS.burnInSteps
     progressbar(i/fS.burnInSteps)
     
-    field = field.stepModel(fS.burnIndt,fS.f0,compiled);
+    field = field.stepModel(fS.burnIndt);
 end
 progressbar(1)

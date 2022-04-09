@@ -1,31 +1,28 @@
-function cellDists = calcGriddedDistMat(Field)
-% CALCGRIDDEDDISTMAT efficiently computes the distance between rods, using
-% the Moore neighbourhood to prevent explicit calculation of distances
-% between very distant rods. Also incorporates periodic boundary conditions.
-% 
-%   INPUTS:
-%       -Field: a WensinkField object
-%
-%   OUTPUTS:
-%       -cellDists: distance matrix for all rods stored in Field. Distances
-%       between rods not in adjacent Moore neighbourhoods are represented
-%       by NaNs.
-%
-%   Authors: William P. J. Smith, Oliver J. Meacock
+function cellDists = calcGriddedDistMat(Field,periodic)
+%% CALCGRIDDEDDISTMAT
+% GIVEN:
+%   * Nx6 needle vector array <NVecs>
+%   * cell configuration <SimList{s=sim}(t=time)>
+%   * a hit threshold distance <h>, which should be set to be
+%           h = max separation between needle and cell center compatible with contact
+%             = 0.5*(max_cell_length + max_needle_length + 2*max_cell_radius)
+%   ...
+% COMPUTE
+%   * Hits, a length-M array counting hits on each cell 1:M
 
 % upload cell data for this configuration
-M = size(Field.xCells,1); % number of cells
-len = Field.lCells';   % cell lengths
+M = size(Field.xCells,1); % number of cells and barrier elements
+len = [Field.lCells'];   % cell lengths
 rad = repmat(Field.lam,1,M);   % cell radii
 
-% define grid and sort rods by centroids (2D)
+% define grid and sort needles, cells by centroids (2D)
 pts_C = [Field.xCells,Field.yCells];  % cell and barrier centroids
 [boxes_C, N_x, N_y] = GridAndBinPoints2D(pts_C(:,1),pts_C(:,2),Field.xWidth,Field.yHeight,Field.distThresh);
 
 % use grid to define sq neighbourhoods (2D)
 [MNs,WTs] = Get2DGridSqNeighbourhoods(N_x, N_y);        % list of <= 9 neighbours per sqare
 
-% get list of cells in each box square
+% Step 4: get list of cells in each box square
 [sq_cont] = GetGridSquareContents(boxes_C, N_x*N_y);% cell array indicating cells in each grid sqaure
 
 %Preallocate a distance matrix with NaNs
@@ -57,24 +54,34 @@ for i = 1:M
         to_check = sq_cont{this_nbour};                 % Cells in this grid square to compare cell i with
         
         if ~isempty(to_check)
-            %Apply periodic boundary conditions to x and y coordinates
-            if this_nbour_wrap == 1 || this_nbour_wrap == 3
-                if x_i > pts_C(to_check(1),1)
-                    x_j = pts_C(to_check,1) + Field.xWidth;
+            if periodic
+                %Apply periodic boundary conditions to x and y coordinates
+                if this_nbour_wrap == 1 || this_nbour_wrap == 3
+                    if x_i > pts_C(to_check(1),1)
+                        x_j = pts_C(to_check,1) + Field.xWidth;
+                    else
+                        x_j = pts_C(to_check,1) - Field.xWidth;
+                    end
                 else
-                    x_j = pts_C(to_check,1) - Field.xWidth;
+                    x_j = pts_C(to_check,1);
+                end
+                if this_nbour_wrap == 2 || this_nbour_wrap == 3
+                    if y_i > pts_C(to_check(1),2)
+                        y_j = pts_C(to_check,2) + Field.yHeight;
+                    else
+                        y_j = pts_C(to_check,2) - Field.yHeight;
+                    end
+                else
+                    y_j = pts_C(to_check,2);
                 end
             else
-                x_j = pts_C(to_check,1);
-            end
-            if this_nbour_wrap == 2 || this_nbour_wrap == 3
-                if y_i > pts_C(to_check(1),2)
-                    y_j = pts_C(to_check,2) + Field.yHeight;
+                if this_nbour_wrap == 0
+                    x_j = pts_C(to_check,1);
+                    y_j = pts_C(to_check,2);
                 else
-                    y_j = pts_C(to_check,2) - Field.yHeight;
+                    x_j = nan(size(to_check));
+                    y_j = nan(size(to_check));
                 end
-            else
-                y_j = pts_C(to_check,2);
             end
             
             i_inds(currInd+1:currInd + size(to_check,1)) = to_check;
@@ -84,4 +91,5 @@ for i = 1:M
         end
     end
     cellDists(i,i_inds) = i_dists;
+end
 end
